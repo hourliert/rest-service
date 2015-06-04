@@ -15,40 +15,107 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../test-fixture/test-fixture-mocha.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
 
-    <!-- Step 1: import the element to test -->
-    <link rel="import" href="../seed-element.html">
+    <link rel="import" href="../../test-fixture/test-fixture.html">
+    <link rel="import" href="../rest-service.html">
   </head>
   <body>
 
-    <!-- You can use the document as a place to set up your fixtures. -->
-    <seed-element></seed-element>
+    <test-fixture id="rest">
+      <template>
+        <rest-service
+          api-url="/zest-basic.herokuapp.com/"
+          ressource="/accounts/signin/"
+          method="POST">
+        </rest-service>
+      </template>
+    </test-fixture>
 
     <script>
-      var myEl = document.querySelector('seed-element');
-
-      suite('<seed-element>', function() {
-
-        test('defines the "author" property', function() {
-          assert.equal(myEl.author.name, 'Dimitri Glazkov');
-          assert.equal(myEl.author.image, 'http://addyosmani.com/blog/wp-content/uploads/2013/04/unicorn.jpg');
+      suite('<rest-service>', function() {
+        var c1;
+        setup(function() {
+          c1 = fixture('rest');
         });
 
-        test('says hello', function() {
-          assert.equal(myEl.sayHello(), 'seed-element says, Hello World!');
-
-          var greetings = myEl.sayHello('greetings Earthlings');
-          assert.equal(greetings, 'seed-element says, greetings Earthlings');
+        test('defines the "auto" property', function() {
+          expect(c1.auto).to.be.equal(false);
         });
 
-        test('fires lasers', function(done) {
-          myEl.addEventListener('seed-element-lasers', function(event) {
-            assert.equal(event.detail.sound, 'Pew pew!');
-            done();
+        test('defines the "method" property', function() {
+          expect(c1.method).to.be.equal('POST');
+        });
+
+        test('defines the "apiUrl" property', function() {
+          expect(c1.apiUrl).to.be.equal('/zest-basic.herokuapp.com/');
+        });
+
+        test('defines the "ressource" property', function() {
+          expect(c1.ressource).to.be.equal('/accounts/signin/');
+        });
+
+        test('defines the "ssl" property', function() {
+          expect(c1.ssl).to.be.equal(false);
+        });
+
+        test('defines the "items" property', function() {
+          expect(c1.items).to.be.equal(undefined);
+        });
+
+        test('defines the "params" property', function() {
+          expect(c1.params).to.be.equal(undefined);
+        });
+
+        test('defines the "body" property', function() {
+          expect(c1.body).to.be.equal(undefined);
+        });
+
+        test('defines the "contentType" property', function() {
+          expect(c1.contentType).to.be.equal('application/json');
+        });
+
+        test('defines the "credentialRequired" property', function() {
+          expect(c1.credentialRequired).to.be.equal(false);
+        });
+
+        test('recompute the complete url', function() {
+          expect(c1._updateUrl('/zest-basic.herokuapp.com/', '/accounts/signin/', false)).to.be.equal('http://zest-basic.herokuapp.com/accounts/signin');
+
+          expect(c1._updateUrl('/zest-basic.herokuapp.com/', '/accounts/signin/', true)).to.be.equal('https://zest-basic.herokuapp.com/accounts/signin');
+
+          expect(c1._updateUrl('zest-basic.herokuapp.com/', 'accounts/signin/', false)).to.be.equal('http://zest-basic.herokuapp.com/accounts/signin');
+        });
+
+        test('should listen for an error event', function() {
+          var error = {
+            fake: true
+          };
+
+          c1.addEventListener('rest-error', function(e) {
+            expect(c1.$.toast.visible).to.be.equal(true);
+            expect(e.detail).to.be.equal(error);
           });
-          myEl.fireLasers();
+
+          c1._errorHandler({
+            detail: error
+          });
         });
 
+        test('should listen for an response event', function() {
+          var response = {
+            fake: true
+          };
+
+          c1.addEventListener('rest-response', function(e) {
+            expect(e.detail).to.be.equal(response);
+          });
+
+          c1._responseHandler({
+            detail: response
+          });
+        });
       });
     </script>
 
