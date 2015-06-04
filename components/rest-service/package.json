@@ -1,0 +1,31 @@
+{
+  "name": "rest-service",
+  "version": "0.0.1",
+  "authors": [
+    "Thomas Hourlier <hourliert@gmail.com>"
+  ],
+  "description": "An element wrapping iron-ajax to handle REST request.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "rest",
+    "ajax",
+    "service"
+  ],
+  "main": "rest-service.html",
+  "license": "MIT",
+  "homepage": "https://github.com/hourliert/rest-service/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "devDependencies": {
+    "browser-sync": "^2.7.6",
+    "gulp": "^3.8.11",
+    "gulp-bg": "0.0.5",
+    "polyserve": "^0.4.0",
+    "ps-node": "0.0.4"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "rest-service",
+  "authors": [
+    "Thomas Hourlier <hourliert@gmail.com>"
+  ],
+  "description": "An element wrapping iron-ajax to handle REST request.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "rest",
+    "ajax",
+    "service"
+  ],
+  "main": "rest-service.html",
+  "license": "MIT",
+  "homepage": "https://github.com/hourliert/rest-service/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.0",
+    "iron-localstorage": "PolymerElements/iron-localstorage#~1.0.0",
+    "paper-toast": "PolymerElements/paper-toast#~1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*",
+    "iron-test-helpers": "PolymerElements/iron-test-helpers#~1.0.1",
+    "test-fixture": "PolymerElements/test-fixture#~1.0.0"
+  },
+  "_release": "82a4b0cef9",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "82a4b0cef90edc9e2084446011cd29f2fb2a18bb"
+  },
+  "_source": "git://github.com/hourliert/rest-service.git",
+  "_target": "master",
+  "_originalSource": "hourliert/rest-service",
+  "_direct": true
+}
