@@ -1,4 +1,4 @@
-#rest-service
+#rest-service [![Build Status](https://travis-ci.org/hourliert/rest-service.svg?branch=master)](https://travis-ci.org/hourliert/rest-service)
 An element wrapping iron-ajax to handle REST request.
 
 #Demo
