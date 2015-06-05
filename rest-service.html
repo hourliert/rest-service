@@ -13,6 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-toast/paper-toast.html">
 
+<link rel="import" href="rest-config.html">
+
 <!--
 An element wrapping iron-ajax to handle REST request.
 
@@ -28,20 +30,11 @@ Example:
 -->
 <dom-module id="rest-service">
   <template>
-    <iron-localstorage
-      name="apiUrl" 
-      value="{{apiUrl}}">
-    </iron-localstorage>
-
-    <iron-localstorage
-      name="credentialRequired" 
-      value="{{credentialRequired}}">
-    </iron-localstorage>
-
-    <iron-localstorage
-      name="ssl" 
-      value="{{ssl}}">
-    </iron-localstorage>
+    <rest-config
+      api-url="{{_apiUrl}}"
+      with-credentials="{{_withCredentials}}"
+      ssl="{{_ssl}}">
+    </rest-config>
 
     <iron-ajax 
       id="ajax" 
@@ -54,7 +47,7 @@ Example:
       params="{{params}}"
       body="{{body}}"
       content-type="{{contentType}}"
-      with-credentials="{{credentialRequired}}">
+      with-credentials="{{_withCredentials}}">
     </iron-ajax>
     
     <paper-toast 
@@ -95,8 +88,26 @@ Example:
        * API Url. All the slash will be removed.
        * @type {String}
        */
-      apiUrl: {
+      _apiUrl: {
         type: String
+      },
+
+      /**
+       * Set the withCredentials flag on the request.
+       * @type {Boolean}
+       */
+      _withCredentials: {
+        type: Boolean,
+        value: false
+      },
+
+       /**
+       * Use HTTP or HTTPS to query the API.
+       * @type {Boolean}
+       */
+      _ssl: {
+        type: Boolean,
+        value: false
       },
 
       /**
@@ -104,16 +115,8 @@ Example:
        * @type {String}
        */
       ressource: {
-        type: String
-      },
-
-      /**
-       * Use HTTP or HTTPS to query the API.
-       * @type {Boolean}
-       */
-      ssl: {
-        type: Boolean,
-        value: false
+        type: String,
+        observer: '_ressourceChanged'
       },
 
       /**
@@ -149,21 +152,11 @@ Example:
       contentType: {
         type: String,
         value: 'application/json'
-      },
-
-      /**
-       * Set the withCredentials flag on the request.
-       * @type {Boolean}
-       */
-      credentialRequired: {
-        type: Boolean,
-        value: false
       }
-
     },
 
     observers: [
-      '_updateUrl(apiUrl, ressource, ssl)'
+      '_updateUrl(_apiUrl, ressource, _ssl)'
     ],
 
     // Element Lifecycle
@@ -209,20 +202,25 @@ Example:
     },
 
     /**
-     * Recompute the url based on the api url, the ressource and ssl configuration.
-     * @param  {String} apiUrl    Api url
-     * @param  {String} ressource Ressource to be modified
-     * @param  {Boolean} ssl       Use HTTPS or HTTP to query the api
+     * Reformat the ressource name whenever it changes
+     * @param  {String} newValue Ressource name after change
+     * @return {Strng }          Ressource name reformated
      */
-    _updateUrl: function(apiUrl, ressource, ssl) {
-      var url;
+    _ressourceChanged: function(newValue) {
+      newValue = newValue.replace(/^\//, '');
+      newValue = newValue.replace(/\/$/, '');
+      this.ressource = newValue;
+      return newValue;
+    },
 
-      apiUrl = apiUrl.replace(/\//g, '');
-      ressource = ressource.replace(/^\//, '');
-      ressource = ressource.replace(/\/$/, '');
-
-      url = ((ssl) ? 'https' : 'http') + '://' + apiUrl + '/' + ressource;
-
+    /**
+     * Recompute the url based on the api url, the ressource and ssl configuration.
+     * @param  {String} _apiUrl    Api url
+     * @param  {String} ressource Ressource to be modified
+     * @param  {Boolean} _ssl       Use HTTPS or HTTP to query the api
+     */
+    _updateUrl: function(_apiUrl, ressource, _ssl) {
+      var url = ((_ssl) ? 'https' : 'http') + '://' + _apiUrl + '/' + ressource;
       this.$.ajax.url = url;
       return url;
     },

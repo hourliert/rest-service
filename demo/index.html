@@ -14,7 +14,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>rest-service Demo</title>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
     <link rel="import" href="../rest-service.html">
+    <link rel="import" href="../rest-config.html">
   </head>
   <body>
     <p>An example of <code>&lt;rest-service&gt;</code>:</p>
@@ -22,15 +24,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-bind" id="app">
       <button on-click="sendRequest">Send request</button>
 
+      <rest-config
+        api-url="/zest-basic.herokuapp.com/">
+      </rest-config>
+
       <rest-service
         id="rest"
-        api-url="/zest-basic.herokuapp.com/"
         ressource="/accounts/signin/"
         method="POST"
         body="[[_body]]"
         on-response="handleResponse"
-        on-error="handleError"
-        ></rest-service>
+        on-error="handleError">
+      </rest-service>
     </template>
     
 

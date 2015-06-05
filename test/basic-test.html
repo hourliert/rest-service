@@ -23,10 +23,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </head>
   <body>
 
-    <test-fixture id="rest">
+    <test-fixture id="rest-config">  
+      <template>
+        <rest-config
+          api-url="/zest-basic.herokuapp.com/">
+        </rest-config>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="rest-service">
       <template>
         <rest-service
-          api-url="/zest-basic.herokuapp.com/"
           ressource="/accounts/signin/"
           method="POST">
         </rest-service>
@@ -35,70 +42,111 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script>
       suite('<rest-service>', function() {
-        var c1;
+        var config;
         setup(function() {
-          c1 = fixture('rest');
-        });
-
-        test('defines the "auto" property', function() {
-          expect(c1.auto).to.be.equal(false);
-        });
-
-        test('defines the "method" property', function() {
-          expect(c1.method).to.be.equal('POST');
+          config = fixture('rest-config');
         });
 
         test('defines the "apiUrl" property', function() {
-          expect(c1.apiUrl).to.be.equal('/zest-basic.herokuapp.com/');
+          expect(config.apiUrl).to.be.equal('zest-basic.herokuapp.com');
         });
 
-        test('defines the "ressource" property', function() {
-          expect(c1.ressource).to.be.equal('/accounts/signin/');
+        test('defines the "withCredentials" property', function() {
+          expect(config.withCredentials).to.be.equal(false);
         });
 
         test('defines the "ssl" property', function() {
-          expect(c1.ssl).to.be.equal(false);
+          expect(config.ssl).to.be.equal(false);
+        });
+
+        test('reformat the api url', function() {
+          expect(config._apiUrlChanged('zest-basic.herokuapp.com/')).to.be.equal('zest-basic.herokuapp.com');
+          expect(config._apiUrlChanged('/zest-basic.herokuapp.com/')).to.be.equal('zest-basic.herokuapp.com');
+          expect(config._apiUrlChanged('//zest-basic.herokuapp.com/')).to.be.equal('zest-basic.herokuapp.com');
+
+          config.set('apiUrl', '/zest-basic.herokuapp.com/');
+          expect(config.apiUrl).to.be.equal('zest-basic.herokuapp.com');
+        });
+      });
+
+
+      suite('<rest-service>', function() {
+        var config, service;
+        setup(function() {
+          service = fixture('rest-service');
+          config = fixture('rest-config');
+        });
+
+        test('defines the "auto" property', function() {
+          expect(service.auto).to.be.equal(false);
+        });
+
+        test('defines the "method" property', function() {
+          expect(service.method).to.be.equal('POST');
+        });
+
+        test('defines the "_apiUrl" property', function() {
+          expect(service._apiUrl).to.be.equal('zest-basic.herokuapp.com');
+        });
+
+        test('defines the "_withCredentials" property', function() {
+          expect(service._withCredentials).to.be.equal(false);
+        });
+
+        test('defines the "_ssl" property', function() {
+          expect(service._ssl).to.be.equal(false);
+        });
+
+        test('defines the "ressource" property', function() {
+          expect(service.ressource).to.be.equal('accounts/signin');
         });
 
         test('defines the "items" property', function() {
-          expect(c1.items).to.be.equal(undefined);
+          expect(service.items).to.be.equal(undefined);
         });
 
         test('defines the "params" property', function() {
-          expect(c1.params).to.be.equal(undefined);
+          expect(service.params).to.be.equal(undefined);
         });
 
         test('defines the "body" property', function() {
-          expect(c1.body).to.be.equal(undefined);
+          expect(service.body).to.be.equal(undefined);
         });
 
         test('defines the "contentType" property', function() {
-          expect(c1.contentType).to.be.equal('application/json');
+          expect(service.contentType).to.be.equal('application/json');
         });
 
-        test('defines the "credentialRequired" property', function() {
-          expect(c1.credentialRequired).to.be.equal(false);
+        test('defines the "_withCredentials" property', function() {
+          expect(service._withCredentials).to.be.equal(false);
         });
 
         test('recompute the complete url', function() {
-          expect(c1._updateUrl('/zest-basic.herokuapp.com/', '/accounts/signin/', false)).to.be.equal('http://zest-basic.herokuapp.com/accounts/signin');
-
-          expect(c1._updateUrl('/zest-basic.herokuapp.com/', '/accounts/signin/', true)).to.be.equal('https://zest-basic.herokuapp.com/accounts/signin');
-
-          expect(c1._updateUrl('zest-basic.herokuapp.com/', 'accounts/signin/', false)).to.be.equal('http://zest-basic.herokuapp.com/accounts/signin');
+          expect(service._updateUrl('zest-basic.herokuapp.com', 'accounts/signin', false)).to.be.equal('http://zest-basic.herokuapp.com/accounts/signin');
         });
+
+        test('reformat the ressource name', function() {
+          expect(service._ressourceChanged('accounts/signin')).to.be.equal('accounts/signin');
+          expect(service._ressourceChanged('accounts/signin/')).to.be.equal('accounts/signin');
+          expect(service._ressourceChanged('/accounts/signin')).to.be.equal('accounts/signin');
+          expect(service._ressourceChanged('/accounts/signin/')).to.be.equal('accounts/signin');
+
+          service.set('ressource', '/accounts/signin/');
+          expect(service.ressource).to.be.equal('accounts/signin');
+        });
+
 
         test('should listen for an error event', function() {
           var error = {
             fake: true
           };
 
-          c1.addEventListener('rest-error', function(e) {
-            expect(c1.$.toast.visible).to.be.equal(true);
+          service.addEventListener('rest-error', function(e) {
+            expect(service.$.toast.visible).to.be.equal(true);
             expect(e.detail).to.be.equal(error);
           });
 
-          c1._errorHandler({
+          service._errorHandler({
             detail: error
           });
         });
@@ -108,11 +156,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             fake: true
           };
 
-          c1.addEventListener('rest-response', function(e) {
+          service.addEventListener('rest-response', function(e) {
             expect(e.detail).to.be.equal(response);
           });
 
-          c1._responseHandler({
+          service._responseHandler({
             detail: response
           });
         });

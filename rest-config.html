@@ -1,0 +1,101 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-localstorage/iron-localstorage.html">
+
+<!--
+Configurable rest service.
+
+Example:
+
+    <rest-config
+      api-url="zest-basic.herokuapp.com">
+    </rest-config>
+
+@demo
+-->
+<dom-module id="rest-config">
+  <template>
+    <iron-localstorage
+      name="apiUrl" 
+      value="{{apiUrl}}">
+    </iron-localstorage>
+
+    <iron-localstorage
+      name="withCredentials" 
+      value="{{withCredentials}}">
+    </iron-localstorage>
+
+    <iron-localstorage
+      name="ssl" 
+      value="{{ssl}}">
+    </iron-localstorage>
+
+  </template>
+
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'rest-config',
+
+    properties: {
+      /**
+       * API Url. All the slash will be removed.
+       * @type {String}
+       */
+      apiUrl: {
+        type: String,
+        notify: true,
+        observer: '_apiUrlChanged'
+      },
+
+      /**
+       * Set the withCredentials flag on the request.
+       * @type {Boolean}
+       */
+      withCredentials: {
+        type: Boolean,
+        value: false,
+        notify: true
+      },
+
+       /**
+       * Use HTTP or HTTPS to query the API.
+       * @type {Boolean}
+       */
+      ssl: {
+        type: Boolean,
+        value: false,
+        notify: true
+      }
+    },
+
+    // Element Lifecycle
+
+    ready: function() {},
+
+    attached: function() {},
+
+    detached: function() {},
+
+    // Element Behavior
+    /**
+     * Reformat the api url whenever it changes
+     * @param  {String} newValue Api url after change
+     * @return {String}          Api url reformated
+     */
+    _apiUrlChanged: function(newValue) {
+      this.apiUrl = newValue.replace(/\//g, '');
+      return this.apiUrl;
+    }
+  });
+</script>
