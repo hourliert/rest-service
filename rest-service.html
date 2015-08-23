@@ -20,15 +20,25 @@ An element wrapping iron-ajax to handle REST request.
 
 Example:
 
+    <rest-config
+      api-url="jsonplaceholder.typicode.com">
+    </rest-config>
+
     <rest-service
-      ressource="accounts/signin"
-      method="POST">
+      id="rest"
+      ressource="/posts"
+      method="POST"
+      body="[[_body]]"
+      on-response="handleResponse"
+      on-error="handleError">
     </rest-service>
 
 @demo
 -->
 <dom-module id="rest-service">
+
   <template>
+
     <rest-config
       api-url="{{_apiUrl}}"
       with-credentials="{{_withCredentials}}"
@@ -157,14 +167,6 @@ Example:
     observers: [
       '_updateUrl(_apiUrl, ressource, _ssl)'
     ],
-
-    // Element Lifecycle
-
-    ready: function() {},
-
-    attached: function() {},
-
-    detached: function() {},
 
     // Element Behavior
 

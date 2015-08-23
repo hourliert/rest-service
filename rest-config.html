@@ -23,7 +23,9 @@ Example:
 @demo
 -->
 <dom-module id="rest-config">
+
   <template>
+
     <iron-localstorage
       name="apiUrl" 
       value="{{apiUrl}}">
@@ -79,14 +81,6 @@ Example:
       }
     },
 
-    // Element Lifecycle
-
-    ready: function() {},
-
-    attached: function() {},
-
-    detached: function() {},
-
     // Element Behavior
     /**
      * Reformat the api url whenever it changes
@@ -94,7 +88,7 @@ Example:
      * @return {String}          Api url reformated
      */
     _apiUrlChanged: function(newValue) {
-      this.apiUrl = newValue.replace(/\//g, '');
+      this.apiUrl = newValue.replace(/\//g, '').replace('http', '').replace('https', '');
       return this.apiUrl;
     }
   });

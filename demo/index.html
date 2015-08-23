@@ -22,33 +22,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <p>An example of <code>&lt;rest-service&gt;</code>:</p>
 
     <template is="dom-bind" id="app">
-      <button on-click="sendRequest">Send request</button>
+
+      <div>
+        <label>
+          Post title
+          <input type="text" value="{{_titleText::input}}" placeholder="Post title"/>
+        </label>
+        <label>
+          Body Text
+          <input type="text" value="{{_bodyText::input}}" placeholder="Body Text"/>
+        </label>
+      </div>
+
+      <button on-click="sendRequest">Create Post</button>
+
+      <div>
+        Server data response:
+        <span>[[_response]]</span>
+      </div>
 
       <rest-config
-        api-url="/zest-basic.herokuapp.com/">
+        api-url="jsonplaceholder.typicode.com">
       </rest-config>
 
       <rest-service
         id="rest"
-        ressource="/accounts/signin/"
+        ressource="/posts"
         method="POST"
         body="[[_body]]"
         on-response="handleResponse"
         on-error="handleError">
       </rest-service>
+
     </template>
     
 
     <script>
       var app = document.querySelector('#app');
 
-      app._body = JSON.stringify({
-        email: 'hourliert@gmail.com',
-        password: '1234'
-      });
-
       app.handleResponse = function(e) {
         console.log('response', e, 'items', this.$.rest.items);
+        app._response = JSON.stringify(this.$.rest.items);
       };
 
       app.handleError = function(e) {
@@ -56,6 +70,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       };
 
       app.sendRequest = function() {
+        app._body = JSON.stringify({
+          title: app._titleText,
+          body: app._bodyText
+        });
+
         this.$.rest.generateRequest();
       };
     </script>
